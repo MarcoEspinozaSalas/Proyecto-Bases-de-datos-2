@@ -4,13 +4,13 @@ USE Proyecto1Bases2;
 GO
 CREATE TABLE personas (id INT, name VARCHAR(30));
 GO
-CREATE OR ALTER PROCEDURE generate_insert 
+CREATE OR ALTER PROCEDURE generate_insert
 	@schema VARCHAR(50),
 	@table VARCHAR (50)
 	AS
 	BEGIN
 
-		DECLARE 
+		DECLARE
 		@sql nvarchar(500),
 		@procedureName VARCHAR(100),
         @type VARCHAR(100),
@@ -36,7 +36,7 @@ CREATE OR ALTER PROCEDURE generate_insert
 		SET @sql='CREATE PROCEDURE '+@schema+'.insert_'+@table+'('
 
 		OPEN cursor_columnas
-		FETCH NEXT FROM cursor_columnas 
+		FETCH NEXT FROM cursor_columnas
 		INTO @procedureName,@type,@cp,@np,@dp
 		WHILE @@FETCH_STATUS=0
 
@@ -44,7 +44,7 @@ CREATE OR ALTER PROCEDURE generate_insert
 				SET @parameter_with_types=@parameter_with_types+'@'+@procedureName+ ' '+@type +', '
 				SET @parameter_without_types=@parameter_without_types+'@'+@procedureName+ ', '
 				SET @column_name=@column_name+@procedureName+ ', '
-				FETCH NEXT FROM cursor_columnas 
+				FETCH NEXT FROM cursor_columnas
 				INTO    @procedureName,@type,@cp,@np,@dp
 			END
 		CLOSE cursor_columnas
