@@ -54,12 +54,14 @@ CREATE OR ALTER PROCEDURE generate_insert
 		SET @parameter_without_types=SUBSTRING(@parameter_without_types,1,LEN(@parameter_without_types)-1)
 		SET @column_name=SUBSTRING(@column_name,1,LEN(@column_name)-1)
 		set @nl=CHAR(13) + CHAR(10)
-		SET @sql=@sql+@parameter_without_types+')'+ @nl +' AS ' +@nl
+		SET @sql=@sql+@parameter_with_types+')'+ @nl +' AS ' +@nl
 		SET @sql=@sql+'INSERT INTO personas('+@column_name+')'+@nl+'values'+@nl
 		SET @sql=@sql+'('+@parameter_without_types+')'
 		print @sql;
 		exec sp_executeSQL @sql;
 	END
 GO
+
+SELECT * FROM INFORMATION_SCHEMA.COLUMNS;
 
 EXEC generate_insert 'DBO','personas';
