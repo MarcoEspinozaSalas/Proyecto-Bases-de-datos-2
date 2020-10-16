@@ -34,8 +34,6 @@ app.use((req, res, next) => {
 const testConexion= require('./routes/route.testConexion');
 app.use('/testConexion', testConexion);
 
-
-
 //NOT FOUND
 app.use((req, res) => {
   res.sendStatus(404);
