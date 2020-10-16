@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const sql = require('mssql');
-const conn = require('./dbconn');
+const conn = require('./dbconnMSSQL');
 const routePool = new sql.ConnectionPool(conn);
 //Usar las rutas
 router.use(bodyParser.urlencoded({extended: false}));

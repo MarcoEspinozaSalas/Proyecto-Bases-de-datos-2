@@ -31,8 +31,11 @@ app.use((req, res, next) => {
 });
 
 //Constantes que llaman a las rutas para ser corridas por el app.js
-const testConexion= require('./routes/route.testConexion');
-app.use('/testConexion', testConexion);
+const testConexionMSSQL= require('./routesMSSQL/route.testConexion');
+app.use('/testConexionMSSQL', testConexionMSSQL);
+
+const testConexionPGSQL= require('./routesPostgreSQL/route.testConexion');
+app.use('/testConexionPGSQL', testConexionPGSQL);
 
 //NOT FOUND
 app.use((req, res) => {
