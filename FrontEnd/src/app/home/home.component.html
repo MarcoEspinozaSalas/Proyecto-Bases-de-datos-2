@@ -1,1 +1,65 @@
-<p>home works!</p>
+<form #form="ngForm" (ngSubmit)="onSubmit(form)" autocomplete="off">
+
+  <label style="margin-left: 10px;">Elija el motor a usar: </label>
+  <select name="motor" [(ngModel)]="tipoMotor" required>
+    <option value="MSSQL">MSSQL</option>
+    <option value="PGSQL">PGSQL</option>
+  </select>
+
+  <br>
+  <label>Test MSSQL</label>
+  <br>
+  <label>User:</label>
+  <input *ngIf="tipoMotor === 'MSSQL' " name="user" type="text" [(ngModel)]="dataConnectMSSQL.user" required>
+
+  <br>
+  <label>Password:</label>
+  <input *ngIf="tipoMotor === 'MSSQL' " name="password" type="text" [(ngModel)]="dataConnectMSSQL.password" required>
+  <br>
+
+  <label>Server:</label>
+  <input *ngIf="tipoMotor === 'MSSQL' " name="server" type="text" [(ngModel)]="dataConnectMSSQL.server" required>
+
+  <br>
+  <label>Database:</label>
+  <input *ngIf="tipoMotor === 'MSSQL' " name="dataBase" type="text" [(ngModel)]="dataConnectMSSQL.database" required>
+  <br>
+
+  <label>Schema:</label>
+  <input *ngIf="tipoMotor === 'MSSQL' " name="schema" type="text" [(ngModel)]="dataGenerateInsert.schema" required>
+
+  <br>
+  <label>Table:</label>
+  <input *ngIf="tipoMotor === 'MSSQL' " name="table" type="text" [(ngModel)]="dataGenerateInsert.table" required>
+  <br>
+
+  <br>
+  <label>Test PGSQL:</label>
+
+  <br>
+
+  <label>Host:</label>
+  <input *ngIf="tipoMotor === 'PGSQL' " name="host" type="text" [(ngModel)]="dataConnectPGSQL.host" required>
+
+  <br>
+  <label>User:</label>
+  <input *ngIf="tipoMotor === 'PGSQL' " name="user" type="text" [(ngModel)]="dataConnectPGSQL.user" required>
+  <br>
+
+  <label>Password:</label>
+  <input *ngIf="tipoMotor === 'PGSQL' " name="password" type="text" [(ngModel)]="dataConnectPGSQL.password" required>
+
+  <br>
+  <label>Database:</label>
+  <input *ngIf="tipoMotor === 'PGSQL' " name="database" type="text" [(ngModel)]="dataConnectPGSQL.database" required>
+  <br>
+
+  <label>Port:</label>
+  <input *ngIf="tipoMotor === 'PGSQL' " name="port" type="text" [(ngModel)]="dataConnectPGSQL.port" required>
+
+
+  <div>
+    <button type="submit">Aceptar</button>
+  </div>
+
+</form>

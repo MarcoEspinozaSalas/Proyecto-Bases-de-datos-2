@@ -3,14 +3,14 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const sql = require('mssql');
-const conn = require('./dbconnMSSQL');
-const routePool = new sql.ConnectionPool(conn);
 //Usar las rutas
 router.use(bodyParser.urlencoded({extended: false}));
 router.use(bodyParser.json());
 
 //Test generateInsert
 router.post('/', (req, res) => {
+  const conn = require('./dbconnMSSQL').config;
+  const routePool = new sql.ConnectionPool(conn);
   const schema = req.body.schema;
   const table = req.body.table;
   if (!schema || !table){

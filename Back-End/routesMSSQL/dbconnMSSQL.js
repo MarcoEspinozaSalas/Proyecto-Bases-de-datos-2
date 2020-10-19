@@ -1,10 +1,22 @@
-//Module que utiliza las variables creadas en el archivo .env
-module.exports = {
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  server: process.env.DB_SERVER,
-  database: process.env.DB_DATABASE,
-  options: {
-    encrypt: false
-  }
-};
+const express = require('express');
+const router = express.Router();
+
+router.post('/connect', (req,res) =>{
+  const user = req.body.user;
+  const password = req.body.password;
+  const server = req.body.server;
+  const database = req.body.database;
+  const config = {
+    user: user,
+    password: password,
+    server: server,
+    database: database,
+    options: {
+      encrypt: false
+    }
+  };
+  module.exports.config = config;
+  let estado = 1;
+  return res.status(200).json({mensaje:"Conectado al motor MSSQL", estado: estado});
+});
+module.exports.router = router;

@@ -34,8 +34,14 @@ app.use((req, res, next) => {
 const testConexionMSSQL= require('./routesMSSQL/route.testConexion');
 app.use('/testConexionMSSQL', testConexionMSSQL);
 
-const testConexionPGSQL= require('./routesPostgreSQL/route.testConexion');
+const testConexionPGSQL= require('./routesPGSQL/route.testConexion');
 app.use('/testConexionPGSQL', testConexionPGSQL);
+
+const connectMSSQLFile = require('./routesMSSQL/dbconnMSSQL').router;
+app.use('/connectMSSQL', connectMSSQLFile);
+
+const connectPGSQLFile = require('./routesPGSQL/dbconnPGSQL').router;
+app.use('/connectPGSQL', connectPGSQLFile);
 
 //NOT FOUND
 app.use((req, res) => {
