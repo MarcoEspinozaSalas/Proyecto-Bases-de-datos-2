@@ -24,7 +24,7 @@ export class MSSQLService {
   postGenerateInsert(
     data: DataGenerateInsert
   ) {
-    return this.http.post(`${this.urlRoot}/`, data);
+    return this.http.post(`${this.urlRoot}/insert`, data);
   }
 
 

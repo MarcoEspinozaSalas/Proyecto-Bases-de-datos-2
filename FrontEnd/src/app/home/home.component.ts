@@ -55,6 +55,8 @@ export class HomeComponent implements OnInit {
               (data: any) =>{
                 if(data.estado === 1){
                   alert("Se generaron los procedimientos almacenados");
+                  console.log(data.data);
+
                 }
                 else{
                    alert("No se generaron los procedimientos almacenados");

@@ -445,5 +445,3 @@ AS
 --EXEC ObtenerLlave 'personas';
 --EXEC crearSchema 'test';
 --CREATE TABLE test.personas3 (id INT PRIMARY KEY, name VARCHAR(30));
-
-

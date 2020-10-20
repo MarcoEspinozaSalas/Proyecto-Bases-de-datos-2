@@ -27,7 +27,7 @@ router.post('/insert', (req, res) => {
     routePool.close();
     if (val.recordset === []) return res.status(200).json({mensaje:"Indefinido"});
     let estado = val.recordset[0][''];
-    if (val.recordset[0].sql_code !== '') return res.status(201).json({mensaje:"Procedimiento Insert Creado", estado: 1});
+    if (val.recordset[0].sql_code !== '') return res.status(201).json({mensaje:"Procedimiento Insert Creado", estado: 1, data: val.recordset});
     else if (estado === 0) return res.status(200).json({mensaje:"Falló el procedimiento generador", estado: 0});
     else return res.sendStatus(418);
   }).catch(err => {
@@ -58,7 +58,7 @@ router.post('/select', (req, res) => {
     routePool.close();
     if (val.recordset === []) return res.status(200).json({mensaje:"Indefinido"});
     let estado = val.recordset[0][''];
-    if (val.recordset[0].sql_code !== '') return res.status(201).json({mensaje:"Procedimiento Select Creado", estado: 1});
+    if (val.recordset[0].sql_code !== '') return res.status(201).json({mensaje:"Procedimiento Select Creado", estado: 1, data: val.recordset});
     else if (estado === 0) return res.status(200).json({mensaje:"Falló el procedimiento generador", estado: 0});
     else return res.sendStatus(418);
   }).catch(err => {
@@ -91,7 +91,7 @@ router.post('/update', (req, res) => {
     routePool.close();
     if (val.recordset === []) return res.status(200).json({mensaje:"Indefinido"});
     let estado = val.recordset[0][''];
-    if (val.recordset[0].sql_code !== '') return res.status(201).json({mensaje:"Procedimiento Update Creado", estado: 1});
+    if (val.recordset[0].sql_code !== '') return res.status(201).json({mensaje:"Procedimiento Update Creado", estado: 1, data: val.recordset});
     else if (estado === 0) return res.status(200).json({mensaje:"Falló el procedimiento generador", estado: 0});
     else return res.sendStatus(418);
   }).catch(err => {
@@ -125,7 +125,7 @@ router.post('/delete', (req, res) => {
     routePool.close();
     if (val.recordset === []) return res.status(200).json({mensaje:"Indefinido"});
     let estado = val.recordset[0][''];
-    if (val.recordset[0].sql_code !== '') return res.status(201).json({mensaje:"Procedimiento Delete Creado", estado: 1});
+    if (val.recordset[0].sql_code !== '') return res.status(201).json({mensaje:"Procedimiento Delete Creado", estado: 1, data: val.recordset});
     else if (estado === 0) return res.status(200).json({mensaje:"Falló el procedimiento generador", estado: 0});
     else return res.sendStatus(418);
   }).catch(err => {
@@ -135,6 +135,7 @@ router.post('/delete', (req, res) => {
     return next(err);
   });
 });
+
 
 //Test get_tables_schema
 router.post('/tablesSchema', (req, res) => {
@@ -151,9 +152,8 @@ router.post('/tablesSchema', (req, res) => {
   }).then(val => {
     routePool.close();
     if (val.recordset === []) return res.status(200).json({mensaje:"Indefinido"});
-    let estado = val.recordset[0][''];
-    if (estado === 1) return res.status(201).json({mensaje:"Se insertó", estado: estado});
-    else if (estado === 0) return res.status(200).json({mensaje:"No se insertó, ya existe", estado: estado});
+    let estado = 1;
+    if (estado === 1) return res.status(201).json({mensaje:"Se encontraron datos", estado: estado, data: val.recordset});
     else return res.sendStatus(418);
   }).catch(err => {
     routePool.close();
@@ -163,8 +163,10 @@ router.post('/tablesSchema', (req, res) => {
   });
 });
 
-//Obtener labor
+//Obtener schemas
 router.get('/Schemas', (req, res) => {
+  const conn = require('./dbconnMSSQL').config;
+  const routePool = new sql.ConnectionPool(conn);
   routePool.connect().then(pool => {
     return pool.request()
     .execute('get_schemas')
@@ -179,13 +181,88 @@ router.get('/Schemas', (req, res) => {
     err.status = 500;
     return next(err);
   });
-
 });
 
 
+//Test get_table_columns
+router.post('/tablesColums', (req, res) => {
+  const conn = require('./dbconnMSSQL').config;
+  const routePool = new sql.ConnectionPool(conn);
+  const table_name = req.body.table_name;
+  if (!table_name){
+      return res.status(400).json({mensaje:'Falta datos'});
+  }
+  routePool.connect().then(pool => {
+    return pool.request()
+    .input('table_name', sql.VarChar(50), table_name)
+    .execute('get_table_columns')
+  }).then(val => {
+    routePool.close();
+    if (val.recordset === []) return res.status(200).json({mensaje:"Indefinido"});
+    let estado = 1;
+    if (estado === 1) return res.status(201).json({mensaje:"Se encontraron datos", estado: estado, data: val.recordset});
+    else return res.sendStatus(418);
+  }).catch(err => {
+    routePool.close();
+    console.error(err);
+    err.status = 500;
+    return next(err);
+  });
+});
 
 
+//Test obtenerPK
+router.post('/obtenerPK', (req, res) => {
+  const conn = require('./dbconnMSSQL').config;
+  const routePool = new sql.ConnectionPool(conn);
+  const table_name = req.body.table_name;
+  if (!table_name){
+      return res.status(400).json({mensaje:'Falta datos'});
+  }
+  routePool.connect().then(pool => {
+    return pool.request()
+    .input('table_name', sql.VarChar(50), table_name)
+    .execute('ObtenerLlave')
+  }).then(val => {
+    routePool.close();
+    if (val.recordset === []) return res.status(200).json({mensaje:"Indefinido"});
+    let estado = 1;
+    if (estado === 1) return res.status(201).json({mensaje:"Se encontraron datos", estado: estado, data: val.recordset});
+    else return res.sendStatus(418);
+  }).catch(err => {
+    routePool.close();
+    console.error(err);
+    err.status = 500;
+    return next(err);
+  });
+});
 
-
+//Test crearSchema
+router.post('/crearSchema', (req, res) => {
+  const conn = require('./dbconnMSSQL').config;
+  const routePool = new sql.ConnectionPool(conn);
+  const schema = req.body.schema;
+  if (!schema){
+      return res.status(400).json({mensaje:'Falta datos'});
+  }
+  routePool.connect().then(pool => {
+    return pool.request()
+    .input('schema', sql.VarChar(50), schema)
+    .execute('crearSchema')
+  }).then(val => {
+    routePool.close();
+    console.log(val.recordset);
+    if (val.recordset === []) return res.status(200).json({mensaje:"Indefinido"});
+    let estado = val.recordset[0][''];
+    if (estado === 1) return res.status(201).json({mensaje:"El schema ha sido creado", estado: estado});
+    else if (estado === 0) return res.status(200).json({mensaje:"No se insertó, ya existe", estado: estado});
+    else return res.sendStatus(418);
+  }).catch(err => {
+    routePool.close();
+    console.error(err);
+    err.status = 500;
+    return next(err);
+  });
+});
 
 module.exports = router;
