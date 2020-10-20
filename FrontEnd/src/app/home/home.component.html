@@ -37,6 +37,10 @@
   <input *ngIf="tipoMotor === 'MSSQL' " name="table" type="number" [(ngModel)]="dataGenerateInsert.state" required>
   <br>
 
+  <label>Codigo Generado:</label>
+  <br>
+  <textarea name="codigo" maxlength="300" rows="7" [(ngModel)]="dataResult"></textarea>
+
   <br>
   <label>Test PGSQL:</label>
 
@@ -60,7 +64,6 @@
 
   <label>Port:</label>
   <input *ngIf="tipoMotor === 'PGSQL' " name="port" type="text" [(ngModel)]="dataConnectPGSQL.port" required>
-
 
   <div>
     <button type="submit">Aceptar</button>

@@ -20,6 +20,7 @@ export class HomeComponent implements OnInit {
   dataConnectPGSQL= new DataConnectPGSQL();
   dataGenerateInsert= new DataGenerateInsert();
   tipoMotor : any;
+  dataResult: any;
 
   constructor(public mssqlService: MSSQLService, public pgsqlService: PGSQLService) { }
 
@@ -55,8 +56,7 @@ export class HomeComponent implements OnInit {
               (data: any) =>{
                 if(data.estado === 1){
                   alert("Se generaron los procedimientos almacenados");
-                  console.log(data.data);
-
+                  this.dataResult = data.data[0].sql_code;
                 }
                 else{
                    alert("No se generaron los procedimientos almacenados");

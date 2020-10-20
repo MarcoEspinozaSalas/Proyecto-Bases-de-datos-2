@@ -100,7 +100,7 @@ CREATE OR ALTER PROCEDURE generate_select
 				DECLARE
 				@sql nvarchar(500),
 				@procedureName VARCHAR(100),
-				@type VARCHAR(100),
+				@type VARCHAR(100),	
 				@cp int,
 				@np int,
 				@dp int,
