@@ -8,14 +8,14 @@ GO
 --CREATE TABLE personas2 (id INT PRIMARY KEY, name VARCHAR(30));
 
 GO
-CREATE OR ALTER PROCEDURE generate_insert 
+CREATE OR ALTER PROCEDURE generate_insert
 	@schema VARCHAR(50),
 	@table VARCHAR (50),
 	@state INT
 	AS
 	BEGIN
 
-		DECLARE 
+		DECLARE
 		@sql nvarchar(500),
 		@procedureName VARCHAR(100),
         @type VARCHAR(100),
@@ -41,7 +41,7 @@ CREATE OR ALTER PROCEDURE generate_insert
 		SET @sql='CREATE OR ALTER PROCEDURE '+@schema+'.insert_'+@table+'('
 
 		OPEN cursor_columns
-		FETCH NEXT FROM cursor_columns 
+		FETCH NEXT FROM cursor_columns
 		INTO @procedureName,@type,@cp,@np,@dp
 		WHILE @@FETCH_STATUS=0
 
@@ -49,7 +49,7 @@ CREATE OR ALTER PROCEDURE generate_insert
 				SET @parameter_with_types=@parameter_with_types+'@'+@procedureName+ ' '+@type +', '
 				SET @parameter_without_types=@parameter_without_types+'@'+@procedureName+ ', '
 				SET @column_name=@column_name+@procedureName+ ', '
-				FETCH NEXT FROM cursor_columns 
+				FETCH NEXT FROM cursor_columns
 				INTO    @procedureName,@type,@cp,@np,@dp
 			END
 		CLOSE cursor_columns
@@ -69,14 +69,14 @@ CREATE OR ALTER PROCEDURE generate_insert
 				SELECT @sql AS sql_code;
 			END
 		ELSE
-			BEGIN	
+			BEGIN
 				SELECT @sql AS sql_code;
 			END
-		
+		SELECT 0
 	END
 GO
 
-EXEC generate_insert 'DBO','personas',0;
+--EXEC generate_insert 'DBO','personas',1;
 
 GO
 
@@ -95,7 +95,7 @@ CREATE OR ALTER PROCEDURE generate_select
 
 		IF (  @params_count = @colums_count )
 			BEGIN
-				DECLARE 
+				DECLARE
 				@sql nvarchar(500),
 				@procedureName VARCHAR(100),
 				@type VARCHAR(100),
@@ -123,7 +123,7 @@ CREATE OR ALTER PROCEDURE generate_select
 				SET @sql='CREATE OR ALTER PROCEDURE '+@schema+'.select_'+@table+'('
 
 				OPEN cursor_columns
-				FETCH NEXT FROM cursor_columns 
+				FETCH NEXT FROM cursor_columns
 				INTO @procedureName,@type,@cp,@np,@dp
 				WHILE @@FETCH_STATUS=0
 
@@ -131,7 +131,7 @@ CREATE OR ALTER PROCEDURE generate_select
 						SET @parameter_with_types=@parameter_with_types+'@'+@procedureName+ ' '+@type +', '
 						SET @parameter_without_types=@parameter_without_types+'@'+@procedureName+ ', '
 						SET @column_name=@column_name+@procedureName+ ', '
-						FETCH NEXT FROM cursor_columns 
+						FETCH NEXT FROM cursor_columns
 						INTO    @procedureName,@type,@cp,@np,@dp
 					END
 				CLOSE cursor_columns
@@ -144,16 +144,16 @@ CREATE OR ALTER PROCEDURE generate_select
 				SET @sql=@sql+@parameter_with_types+')'+ @nl +' AS ' +@nl
 
 				SET @sql=@sql+'SELECT * FROM '+@table+' WHERE ';
-				
+
 				DECLARE @counter INT = 0;
-	
+
 				DECLARE @parameter VARCHAR(100);
 				DECLARE @value VARCHAR (100);
 
-				
-					
-				WHILE @counter < @params_count	
-					BEGIN				
+
+
+				WHILE @counter < @params_count
+					BEGIN
 						SET @value = (SELECT value FROM STRING_SPLIT (@parameter_without_types,',') ORDER BY value DESC OFFSET @counter ROWS FETCH FIRST 1 ROWS ONLY );
 						SET @parameter = (SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = @table ORDER BY TABLE_NAME OFFSET @counter ROWS FETCH FIRST 1 ROWS ONLY ) ;
 
@@ -164,7 +164,7 @@ CREATE OR ALTER PROCEDURE generate_select
 						ELSE
 							BEGIN
 								SET @sql = @sql + ' ' + @parameter + ' = ' + @value+';';
-							END			
+							END
 						SET @counter = @counter + 1;
 					END
 				PRINT @sql;
@@ -174,7 +174,7 @@ CREATE OR ALTER PROCEDURE generate_select
 						SELECT @sql AS sql_code;
 					END
 				ELSE
-					BEGIN	
+					BEGIN
 						SELECT @sql AS sql_code;
 					END
 			END
@@ -184,7 +184,7 @@ CREATE OR ALTER PROCEDURE generate_select
 			END
 	END
 GO
-EXEC generate_select 'DBO','personas',0;
+--EXEC generate_select 'DBO','personas',1;
 GO
 
 GO
@@ -203,7 +203,7 @@ CREATE OR ALTER PROCEDURE generate_update
 
 		IF (  @params_count = @colums_count )
 			BEGIN
-				DECLARE 
+				DECLARE
 				@sql nvarchar(500),
 				@procedureName VARCHAR(100),
 				@type VARCHAR(100),
@@ -231,7 +231,7 @@ CREATE OR ALTER PROCEDURE generate_update
 				SET @sql='CREATE OR ALTER PROCEDURE '+@schema+'.update_'+@table+'('
 
 				OPEN cursor_columns
-				FETCH NEXT FROM cursor_columns 
+				FETCH NEXT FROM cursor_columns
 				INTO @procedureName,@type,@cp,@np,@dp
 				WHILE @@FETCH_STATUS=0
 
@@ -239,7 +239,7 @@ CREATE OR ALTER PROCEDURE generate_update
 						SET @parameter_with_types=@parameter_with_types+'@'+@procedureName+ ' '+@type +', '
 						SET @parameter_without_types=@parameter_without_types+'@'+@procedureName+ ', '
 						SET @column_name=@column_name+@procedureName+ ', '
-						FETCH NEXT FROM cursor_columns 
+						FETCH NEXT FROM cursor_columns
 						INTO    @procedureName,@type,@cp,@np,@dp
 					END
 				CLOSE cursor_columns
@@ -252,17 +252,17 @@ CREATE OR ALTER PROCEDURE generate_update
 				SET @sql=@sql+@parameter_with_types+')'+ @nl +' AS ' +@nl
 
 				SET @sql=@sql+'UPDATE '+@table+' SET ';
-				
+
 				DECLARE @counter INT = 0;
-	
+
 				DECLARE @parameter VARCHAR(100);
 				DECLARE @value VARCHAR (100);
 
 				DECLARE @firstParameter VARCHAR(100);
 				DECLARE @firstValue VARCHAR (100);
-									
-				WHILE @counter < @params_count	
-					BEGIN				
+
+				WHILE @counter < @params_count
+					BEGIN
 						SET @value = (SELECT value FROM STRING_SPLIT (@parameter_without_types,',') ORDER BY value DESC OFFSET @counter ROWS FETCH FIRST 1 ROWS ONLY );
 						SET @parameter = (SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = @table ORDER BY TABLE_NAME OFFSET @counter ROWS FETCH FIRST 1 ROWS ONLY ) ;
 
@@ -273,12 +273,11 @@ CREATE OR ALTER PROCEDURE generate_update
 						ELSE
 							BEGIN
 								SET @sql = @sql + ' ' + @parameter + ' = ' + @value+' ';
-							END			
+							END
 						SET @counter = @counter + 1;
 					END
 
 				SET @sql=@sql+'WHERE '+ @filter +  ' = @' + @filter + ';'
-	
 				PRINT @sql;
 				IF @state = 1
 					BEGIN
@@ -286,7 +285,7 @@ CREATE OR ALTER PROCEDURE generate_update
 						SELECT @sql AS sql_code;
 					END
 				ELSE
-					BEGIN	
+					BEGIN
 						SELECT @sql AS sql_code;
 					END
 			END
@@ -297,7 +296,7 @@ CREATE OR ALTER PROCEDURE generate_update
 	END
 GO
 
-EXEC generate_update  'DBO','personas','id',1;
+--EXEC generate_update  'DBO','personas','id',1;
 
 GO
 
@@ -316,7 +315,7 @@ CREATE OR ALTER PROCEDURE generate_delete
 
 		IF (  @params_count = @colums_count )
 			BEGIN
-				DECLARE 
+				DECLARE
 				@sql nvarchar(500),
 				@procedureName VARCHAR(100),
 				@type VARCHAR(100),
@@ -344,7 +343,7 @@ CREATE OR ALTER PROCEDURE generate_delete
 				SET @sql='CREATE OR ALTER PROCEDURE '+@schema+'.delete_'+@table+'('
 
 				OPEN cursor_columns
-				FETCH NEXT FROM cursor_columns 
+				FETCH NEXT FROM cursor_columns
 				INTO @procedureName,@type,@cp,@np,@dp
 				WHILE @@FETCH_STATUS=0
 
@@ -352,7 +351,7 @@ CREATE OR ALTER PROCEDURE generate_delete
 						SET @parameter_with_types=@parameter_with_types+'@'+@procedureName+ ' '+@type +', '
 						SET @parameter_without_types=@parameter_without_types+'@'+@procedureName+ ', '
 						SET @column_name=@column_name+@procedureName+ ', '
-						FETCH NEXT FROM cursor_columns 
+						FETCH NEXT FROM cursor_columns
 						INTO    @procedureName,@type,@cp,@np,@dp
 					END
 				CLOSE cursor_columns
@@ -365,9 +364,6 @@ CREATE OR ALTER PROCEDURE generate_delete
 				SET @sql=@sql+@parameter_with_types+')'+ @nl +' AS ' +@nl
 
 				SET @sql=@sql+'DELETE FROM '+@table+' WHERE '+@filter+ ' = @' + @filter + ';'  ;
-				
-				
-	
 				PRINT @sql;
 				IF @state = 1
 					BEGIN
@@ -375,7 +371,7 @@ CREATE OR ALTER PROCEDURE generate_delete
 						SELECT @sql AS sql_code;
 					END
 				ELSE
-					BEGIN	
+					BEGIN
 						SELECT @sql AS sql_code;
 					END
 			END
@@ -385,13 +381,13 @@ CREATE OR ALTER PROCEDURE generate_delete
 			END
 	END
 GO
-EXEC generate_delete  'DBO','personas','id',1;
+--EXEC generate_delete  'DBO','personas','id',1;
 GO
 CREATE OR ALTER PROCEDURE get_tables_schema
 	@schema VARCHAR (50)
 	AS
 	BEGIN
-		SELECT TABLE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = @schema;
+		SELECT DISTINCT TABLE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = @schema;
 	END
 GO
 CREATE OR ALTER PROCEDURE get_schemas
@@ -407,5 +403,41 @@ CREATE OR ALTER PROCEDURE get_table_columns
 		SELECT COLUMN_NAME AS columns FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = @table_name;
 	END
 GO
-EXEC get_table_columns 'personas';
-	
+
+
+CREATE OR ALTER PROCEDURE ObtenerLlave
+@table_name nvarchar(150)
+as
+	SELECT [name]
+	FROM syscolumns
+	WHERE [id] IN (
+	SELECT [id] FROM sysobjects
+	WHERE [name] = @table_name )
+	AND colid IN (
+	SELECT sysindexkeys.colid
+	FROM sysindexkeys JOIN sysobjects ON sysindexkeys.[id] = sysobjects.[id]
+	WHERE sysindexkeys.indid = 1 AND sysobjects.[name] = @table_name )
+
+GO
+
+CREATE OR ALTER PROCEDURE crearSchema( @schema varchar( 50 ) )
+
+AS 
+    IF EXISTS ( SELECT * from INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_OWNER = 'dbo' AND SCHEMA_NAME = @schema )
+        BEGIN
+            SELECT 0
+        END
+    ELSE
+        BEGIN
+            DECLARE @sql nvarchar( 300 )
+            SET @sql = 'CREATE SCHEMA ' + @schema
+            EXEC sp_executeSQL @sql;
+            SELECT 1
+        END
+
+--EXEC get_schemas;
+--EXEC get_tables_schema 'dbo';
+--EXEC get_table_columns 'personas';
+--EXEC ObtenerLlave 'personas';
+--EXEC crearSchema 'test';
+--CREATE TABLE test.personas3 (id INT PRIMARY KEY, name VARCHAR(30));
