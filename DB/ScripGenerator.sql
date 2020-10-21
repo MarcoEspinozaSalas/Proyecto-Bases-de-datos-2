@@ -6,9 +6,8 @@ USE Proyecto1Bases2;
 GO
 
 --CREATE TABLE personas2 (id INT PRIMARY KEY, name VARCHAR(30));
+
 --CREATE TABLE personas (id INT PRIMARY KEY, name VARCHAR(30));
-
-
 GO
 CREATE OR ALTER PROCEDURE generate_insert
 	@schema VARCHAR(50),
@@ -100,7 +99,7 @@ CREATE OR ALTER PROCEDURE generate_select
 				DECLARE
 				@sql nvarchar(500),
 				@procedureName VARCHAR(100),
-				@type VARCHAR(100),	
+				@type VARCHAR(100),
 				@cp int,
 				@np int,
 				@dp int,
@@ -161,11 +160,11 @@ CREATE OR ALTER PROCEDURE generate_select
 
 						IF (@counter < @params_count-1)
 							BEGIN
-								SET @sql = @sql + ' ' + @parameter + ' = ' + @value + ' OR ';
+								SET @sql = @sql + '( ' + @value + ' IS NULL OR ( ' + @parameter + ' = ' + @value + ')) AND ';
 							END
 						ELSE
 							BEGIN
-								SET @sql = @sql + ' ' + @parameter + ' = ' + @value+';';
+								SET @sql = @sql + '( ' + @value + ' IS NULL OR ( ' + @parameter + ' = ' + @value + ')) OPTION (RECOMPILE);';
 							END
 						SET @counter = @counter + 1;
 					END
@@ -186,14 +185,13 @@ CREATE OR ALTER PROCEDURE generate_select
 			END
 	END
 GO
---EXEC generate_select 'DBO','personas',1;
+--EXEC generate_select 'DBO','personas',1;	
 GO
 
 GO
 CREATE OR ALTER PROCEDURE generate_update
 	@schema VARCHAR(50),
 	@table VARCHAR (50),
-	@filter VARCHAR(50),
 	@state INT
 	AS
 	BEGIN
@@ -253,7 +251,7 @@ CREATE OR ALTER PROCEDURE generate_update
 				SET @nl=CHAR(13) + CHAR(10)
 				SET @sql=@sql+@parameter_with_types+')'+ @nl +' AS ' +@nl
 
-				SET @sql=@sql+'UPDATE '+@table+' SET ';
+				SET @sql=@sql+' UPDATE '+@table+' SET ';
 
 				DECLARE @counter INT = 0;
 
@@ -278,8 +276,29 @@ CREATE OR ALTER PROCEDURE generate_update
 							END
 						SET @counter = @counter + 1;
 					END
+				DECLARE @filter VARCHAR (50);
+				SET @filter = (SELECT name FROM syscolumns WHERE id IN ( SELECT id FROM sysobjects WHERE name = @table ) AND colid IN ( SELECT sysindexkeys.colid FROM sysindexkeys JOIN sysobjects ON sysindexkeys.[id] = sysobjects.[id] WHERE sysindexkeys.indid = 1 AND sysobjects.name = @table ));
 
-				SET @sql=@sql+'WHERE '+ @filter +  ' = @' + @filter + ';'
+				IF (@filter != '')
+				BEGIN
+					SET @sql=@sql+' WHERE (@'+@filter+' IS NULL OR ('+@filter+' = @'+@filter+'));';
+				END
+
+				--WHILE @counter < @params_count
+				--	BEGIN
+				--		SET @value = (SELECT value FROM STRING_SPLIT (@parameter_without_types,',') ORDER BY value DESC OFFSET @counter ROWS FETCH FIRST 1 ROWS ONLY );
+				--		SET @parameter = (SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = @table ORDER BY TABLE_NAME OFFSET @counter ROWS FETCH FIRST 1 ROWS ONLY ) ;
+
+				--		IF (@counter < @params_count-1)
+				--			BEGIN
+				--				SET @sql = @sql + '( ' + @value + ' IS NULL OR ( ' + @parameter + ' = ' + @value + ')) AND ';
+				--			END
+				--		ELSE
+				--			BEGIN
+				--				SET @sql = @sql + '( ' + @value + ' IS NULL OR ( ' + @parameter + ' = ' + @value + ')) OPTION (RECOMPILE);';
+				--			END
+				--		SET @counter = @counter + 1;
+				--	END
 
 				PRINT @sql;
 				IF @state = 1
@@ -299,14 +318,13 @@ CREATE OR ALTER PROCEDURE generate_update
 	END
 GO
 
---EXEC generate_update  'DBO','personas','id',1;
+--EXEC generate_update  'test15','personas2',1;
 
 GO
 
 CREATE OR ALTER PROCEDURE generate_delete
 	@schema VARCHAR(50),
 	@table VARCHAR (50),
-	@filter VARCHAR (50),
 	@state INT
 	AS
 	BEGIN
@@ -366,7 +384,15 @@ CREATE OR ALTER PROCEDURE generate_delete
 				SET @nl=CHAR(13) + CHAR(10)
 				SET @sql=@sql+@parameter_with_types+')'+ @nl +' AS ' +@nl
 
-				SET @sql=@sql+'DELETE FROM '+@table+' WHERE '+@filter+ ' = @' + @filter + ';'  ;
+				SET @sql=@sql+'DELETE FROM '+@table
+
+				DECLARE @filter VARCHAR (50);
+				SET @filter = (SELECT name FROM syscolumns WHERE id IN ( SELECT id FROM sysobjects WHERE name = @table ) AND colid IN ( SELECT sysindexkeys.colid FROM sysindexkeys JOIN sysobjects ON sysindexkeys.[id] = sysobjects.[id] WHERE sysindexkeys.indid = 1 AND sysobjects.name = @table ));
+
+				IF (@filter != '')
+				BEGIN
+					SET @sql=@sql+' WHERE (@'+@filter+' IS NULL OR ('+@filter+' = @'+@filter+'));';
+				END
 
 				PRINT @sql;
 				IF @state = 1
@@ -385,7 +411,7 @@ CREATE OR ALTER PROCEDURE generate_delete
 			END
 	END
 GO
---EXEC generate_delete  'DBO','personas','id',1;
+--EXEC generate_delete  'DBO','personas',1;
 GO
 CREATE OR ALTER PROCEDURE get_tables_schema
 	@schema VARCHAR (50)
@@ -397,7 +423,7 @@ GO
 CREATE OR ALTER PROCEDURE get_schemas
 	AS
 	BEGIN
-		SELECT DISTINCT TABLE_SCHEMA FROM INFORMATION_SCHEMA.COLUMNS;
+		SELECT DISTINCT SCHEMA_NAME FROM Proyecto1Bases2.INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_OWNER = 'dbo';
 	END
 GO
 CREATE OR ALTER PROCEDURE get_table_columns
@@ -409,39 +435,43 @@ CREATE OR ALTER PROCEDURE get_table_columns
 GO
 
 
-CREATE OR ALTER PROCEDURE ObtenerLlave
-@table_name nvarchar(150)
-as
-	SELECT [name]
-	FROM syscolumns
-	WHERE [id] IN (
-	SELECT [id] FROM sysobjects
-	WHERE [name] = @table_name )
-	AND colid IN (
-	SELECT sysindexkeys.colid
-	FROM sysindexkeys JOIN sysobjects ON sysindexkeys.[id] = sysobjects.[id]
-	WHERE sysindexkeys.indid = 1 AND sysobjects.[name] = @table_name )
-
+CREATE OR ALTER PROCEDURE get_primary_key
+@table_name NVARCHAR(150)
+AS
+	BEGIN
+		SELECT [name]
+		FROM syscolumns
+		WHERE [id] IN (
+		SELECT [id] FROM sysobjects
+		WHERE [name] = @table_name )
+		AND colid IN (
+		SELECT sysindexkeys.colid
+		FROM sysindexkeys JOIN sysobjects ON sysindexkeys.[id] = sysobjects.[id]
+		WHERE sysindexkeys.indid = 1 AND sysobjects.[name] = @table_name )
+	END
 GO
-
-CREATE OR ALTER PROCEDURE crearSchema( @schema varchar( 50 ) )
-
-AS 
-    IF EXISTS ( SELECT * from INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_OWNER = 'dbo' AND SCHEMA_NAME = @schema )
-        BEGIN
-            SELECT 0
-        END
-    ELSE
-        BEGIN
-            DECLARE @sql nvarchar( 300 )
-            SET @sql = 'CREATE SCHEMA ' + @schema
-            EXEC sp_executeSQL @sql;
-            SELECT 1
-        END
+--EXEC get_primary_key personas;
+CREATE OR ALTER PROCEDURE create_schema
+	@schema varchar( 50 )
+AS
+	BEGIN
+		IF EXISTS ( SELECT * from INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_OWNER = 'dbo' AND SCHEMA_NAME = @schema )
+			BEGIN
+				SELECT 0
+			END
+		ELSE
+			BEGIN
+				DECLARE @sql nvarchar( 300 )
+				SET @sql = 'CREATE SCHEMA ' + @schema
+				EXEC sp_executeSQL @sql;
+				SELECT 1
+			END
+	END
 
 --EXEC get_schemas;
 --EXEC get_tables_schema 'dbo';
 --EXEC get_table_columns 'personas';
 --EXEC ObtenerLlave 'personas';
---EXEC crearSchema 'test';
---CREATE TABLE test.personas3 (id INT PRIMARY KEY, name VARCHAR(30));
+--EXEC create_schema 'test';
+--CREATE TABLE test15.personas5 (id INT PRIMARY KEY, name VARCHAR(30));
+

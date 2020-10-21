@@ -24,20 +24,64 @@
   <label>Database:</label>
   <input *ngIf="tipoMotor === 'MSSQL' " name="dataBase" type="text" [(ngModel)]="dataConnectMSSQL.database" required>
   <br>
+  <br>
+  <br>
+  <br>
 
-  <label>Schema:</label>
-  <input *ngIf="tipoMotor === 'MSSQL' " name="schema" type="text" [(ngModel)]="dataGenerateInsert.schema" required>
+  <div>
+    <button type="submit">Conectar</button>
+  </div>
+  <br>
+  <br>
+
+  <label>Crear Schema:</label>
+  <input *ngIf="tipoMotor === 'MSSQL'  && connected " name="crearSchema" type="text" [(ngModel)]="dataCrearSchema.schema">
+  <br>
+  <br>
+  <button type="button" name="crearSchema" (click)="crearSchema()">Crear Schema</button>
+  <br>
+  <br>
+
+  <label style="margin-left: 10px;">Schema: </label>
+  <select *ngIf="tipoMotor === 'MSSQL' && connected" id="schema" name="schema" [(ngModel)]="dataGenerateSP.schema" (click)="getTablesSchema()" required>
+    <option *ngFor="let item of dataSchema" value={{item.SCHEMA_NAME}}>{{item.SCHEMA_NAME}}</option>
+  </select>
+  <br>
+
+  <label style="margin-left: 10px;">Elija el CRUD a realizar: </label>
+  <select *ngIf="tipoMotor === 'MSSQL' && connected" name="motor" [(ngModel)]="tipoCRUD" required>
+    <option value="INSERT">INSERT</option>
+    <option value="SELECT">SELECT</option>
+    <option value="UPDATE">UPDATE</option>
+    <option value="DELETE">DELETE</option>
+  </select>
 
   <br>
-  <label>Table:</label>
-  <input *ngIf="tipoMotor === 'MSSQL' " name="table" type="text" [(ngModel)]="dataGenerateInsert.table" required>
   <br>
+
+  <label style="margin-left: 10px;">Table: </label>
+  <select *ngIf="tipoMotor === 'MSSQL' && connected" name="table" [(ngModel)]="dataGenerateSP.table" required>
+    <option *ngFor="let item of getDataTablesSchema" value={{item.TABLE_NAME}}>{{item.TABLE_NAME}}</option>
+  </select>
+  <br>
+
 
   <label>Estado:</label>
-  <input *ngIf="tipoMotor === 'MSSQL' " name="table" type="number" [(ngModel)]="dataGenerateInsert.state" required>
+  <select *ngIf="tipoMotor === 'MSSQL' && connected" name="state" [(ngModel)]="dataGenerateSP.state" required>
+    <option value=1>Generar código</option>
+    <option value=2>Generar y ejecutar código</option>
+  </select>
+
   <br>
 
+
   <label>Codigo Generado:</label>
+  <br>
+  <br>
+  <div>
+    <button type="submit">Aceptar</button>
+  </div>
+  <br>
   <br>
   <textarea name="codigo" maxlength="300" rows="7" [(ngModel)]="dataResult"></textarea>
 
@@ -64,6 +108,10 @@
 
   <label>Port:</label>
   <input *ngIf="tipoMotor === 'PGSQL' " name="port" type="text" [(ngModel)]="dataConnectPGSQL.port" required>
+
+  <br>
+  <br>
+  <br>
 
   <div>
     <button type="submit">Aceptar</button>

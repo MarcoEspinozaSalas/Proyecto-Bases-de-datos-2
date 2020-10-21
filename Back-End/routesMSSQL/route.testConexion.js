@@ -45,7 +45,7 @@ router.post('/select', (req, res) => {
   const schema = req.body.schema;
   const table = req.body.table;
   const state = req.body.state;
-  if (!schema || !table || state){
+  if (!schema || !table || !state){
       return res.status(400).json({mensaje:'Falta datos'});
   }
   routePool.connect().then(pool => {
@@ -75,16 +75,14 @@ router.post('/update', (req, res) => {
   const routePool = new sql.ConnectionPool(conn);
   const schema = req.body.schema;
   const table = req.body.table;
-  const filter = req.body.filter;
   const state = req.body.state;
-  if (!schema || !table || state){
+  if (!schema || !table || !state){
       return res.status(400).json({mensaje:'Falta datos'});
   }
   routePool.connect().then(pool => {
     return pool.request()
     .input('schema', sql.VarChar(50), schema)
     .input('table', sql.VarChar(50), table)
-    .input('filter', sql.VarChar(50), filter)
     .input('state', sql.VarChar(50), state)
     .execute('generate_update')
   }).then(val => {
@@ -109,16 +107,14 @@ router.post('/delete', (req, res) => {
   const routePool = new sql.ConnectionPool(conn);
   const schema = req.body.schema;
   const table = req.body.table;
-  const filter = req.body.filter;
   const state = req.body.state;
-  if (!schema || !table || filter || state){
+  if (!schema || !table || !state){
       return res.status(400).json({mensaje:'Falta datos'});
   }
   routePool.connect().then(pool => {
     return pool.request()
     .input('schema', sql.VarChar(50), schema)
     .input('table', sql.VarChar(50), table)
-    .input('filter', sql.VarChar(50), filter)
     .input('state', sql.VarChar(50), state)
     .execute('generate_delete')
   }).then(val => {
@@ -248,10 +244,9 @@ router.post('/crearSchema', (req, res) => {
   routePool.connect().then(pool => {
     return pool.request()
     .input('schema', sql.VarChar(50), schema)
-    .execute('crearSchema')
+    .execute('create_schema')
   }).then(val => {
     routePool.close();
-    console.log(val.recordset);
     if (val.recordset === []) return res.status(200).json({mensaje:"Indefinido"});
     let estado = val.recordset[0][''];
     if (estado === 1) return res.status(201).json({mensaje:"El schema ha sido creado", estado: estado});
