@@ -1,6 +1,8 @@
+//Constantes librerias
 const express = require('express');
 const router = express.Router();
 
+//Endpoint que realiza la conexión
 router.post('/connect', (req,res) =>{
   const user = req.body.user;
   const password = req.body.password;

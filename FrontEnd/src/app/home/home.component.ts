@@ -13,10 +13,7 @@ import { GetDataTablesSchema} from '../models/MSSQL/model-getDataTablesSchema';
 import { GetDataTablesSchemaPG} from '../models/PGSQL/model-dataTablesSchemaPG';
 import { DataCrearSchemas} from '../models/MSSQL/model-crearSchema';
 import { DataGenerateSPPG} from '../models/PGSQL/model-generateSP';
-
 import { DataCrearSchemasPG} from '../models/PGSQL/model-crearSchemaPG';
-
-
 import { DataConnectPGSQL} from '../models/PGSQL/model-connectPGSQL';
 
 
@@ -26,7 +23,7 @@ import { DataConnectPGSQL} from '../models/PGSQL/model-connectPGSQL';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-
+ //Globals
   dataConnectMSSQL= new DataConnectMSSQL();
   dataConnectPGSQL= new DataConnectPGSQL();
   dataGenerateSP= new DataGenerateSP();
@@ -52,7 +49,8 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
   }
 
-
+//Funciones
+  //Obtiene schemas
   getSchemaAfterConnect(){
     this.dataSchema = [];
     if (this.connectedMSSQL) {
@@ -73,7 +71,7 @@ export class HomeComponent implements OnInit {
     }
 
   }
-
+//Obtiene schemas
   getSchemaAfterConnect2(){
     this.dataSchemaPG = [];
     if (this.connectedPGSQL) {
@@ -95,7 +93,7 @@ export class HomeComponent implements OnInit {
 
   }
 
-
+//Obtiene las tablas de un schema
   getTablesSchema(){
     this.getDataTablesSchema = [];
     this.dataTablesSchema.schema = this.dataGenerateSP.schema;
@@ -114,7 +112,7 @@ export class HomeComponent implements OnInit {
       )
     }
   }
-
+//Obtiene las tablas de un schema
   getTablesSchema2(){
     this.getDataTablesSchemaPG = [];
     this.dataTablesSchemaPG.schema = this.dataGenerateSPPG.schema;
@@ -133,7 +131,7 @@ export class HomeComponent implements OnInit {
       )
     }
   }
-
+//Crear schema
   crearSchema(){
     this.mssqlService.postCrearSchema(this.dataCrearSchema)
         .subscribe(
@@ -159,7 +157,7 @@ export class HomeComponent implements OnInit {
     this.getTablesSchema();
     this.getSchemaAfterConnect();
   }
-
+//Crear schema
   crearSchema2(){
     this.pgsqlService.postCrearSchema(this.dataCrearSchemaPG)
         .subscribe(
@@ -186,7 +184,7 @@ export class HomeComponent implements OnInit {
     this.getSchemaAfterConnect2();
   }
 
-
+//Enviar formulario
   onSubmit(form) {
     if (form.valid) {
       console.log(this.tipoMotor);

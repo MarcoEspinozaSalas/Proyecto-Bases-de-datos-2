@@ -1,3 +1,4 @@
+//Librerias
 require('dotenv').config();
 const http = require('http'); //Librería para crear el servidor
 const app = require('./app'); //Librería con todas las rutas, middlewares y demás

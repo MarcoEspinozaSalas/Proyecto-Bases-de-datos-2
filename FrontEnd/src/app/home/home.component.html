@@ -1,179 +1,180 @@
-<form #form="ngForm" (ngSubmit)="onSubmit(form)" autocomplete="off">
+  <form #form="ngForm" (ngSubmit)="onSubmit(form)" autocomplete="off">
 
-  <label style="margin-left: 10px;">Elija el motor a usar: </label>
-  <select name="motor" [(ngModel)]="tipoMotor" required>
-    <option value="MSSQL">MSSQL</option>
-    <option value="PGSQL">PGSQL</option>
-  </select>
+    <label>Elija el motor a usar: </label>
+    <select name="motor" [(ngModel)]="tipoMotor" required>
+      <option value="MSSQL">MSSQL</option>
+      <option value="PGSQL">PGSQL</option>
+    </select>
 
-  <br>
-  <label>Test MSSQL</label>
-  <br>
-  <label>User:</label>
-  <input *ngIf="tipoMotor === 'MSSQL' " name="user" type="text" [(ngModel)]="dataConnectMSSQL.user" required>
+    <br>
+    <label>Test MSSQL:</label>
+    <br>
+    <label>User:</label>
+    <input *ngIf="tipoMotor === 'MSSQL' " name="user" type="text" [(ngModel)]="dataConnectMSSQL.user" required>
 
-  <br>
-  <label>Password:</label>
-  <input *ngIf="tipoMotor === 'MSSQL' " name="password" type="text" [(ngModel)]="dataConnectMSSQL.password" required>
-  <br>
+    <br>
+    <label>Password:</label>
+    <input *ngIf="tipoMotor === 'MSSQL' " name="password" type="text" [(ngModel)]="dataConnectMSSQL.password" required>
+    <br>
 
-  <label>Server:</label>
-  <input *ngIf="tipoMotor === 'MSSQL' " name="server" type="text" [(ngModel)]="dataConnectMSSQL.server" required>
+    <label>Server:</label>
+    <input *ngIf="tipoMotor === 'MSSQL' " name="server" type="text" [(ngModel)]="dataConnectMSSQL.server" required>
 
-  <br>
-  <label>Database:</label>
-  <input *ngIf="tipoMotor === 'MSSQL' " name="dataBase" type="text" [(ngModel)]="dataConnectMSSQL.database" required>
-  <br>
-  <br>
-  <br>
-  <br>
+    <br>
+    <label>Database:</label>
+    <input *ngIf="tipoMotor === 'MSSQL' " name="dataBase" type="text" [(ngModel)]="dataConnectMSSQL.database" required>
+    <br>
+    <br>
+    <br>
+    <br>
 
-  <div>
-    <button type="submit">Conectar</button>
-  </div>
-  <br>
-  <br>
+    <div>
+      <button type="submit">Conectar</button>
+    </div>
+    <br>
+    <br>
 
-  <label>Crear Schema:</label>
-  <input *ngIf="tipoMotor === 'MSSQL'  && connectedMSSQL " name="crearSchema" type="text" [(ngModel)]="dataCrearSchema.schema">
-  <br>
-  <br>
-  <button type="button" name="crearSchema" (click)="crearSchema()">Crear Schema</button>
-  <br>
-  <br>
+    <label>Crear Schema:</label>
+    <input *ngIf="tipoMotor === 'MSSQL'  && connectedMSSQL " name="crearSchema" type="text" [(ngModel)]="dataCrearSchema.schema">
+    <br>
+    <br>
+    <button type="button" name="crearSchema" (click)="crearSchema()">Crear Schema</button>
+    <br>
+    <br>
 
-  <label style="margin-left: 10px;">Schema: </label>
-  <select *ngIf="tipoMotor === 'MSSQL' && connectedMSSQL" id="schema" name="schema" [(ngModel)]="dataGenerateSP.schema" (click)="getTablesSchema()" required>
-    <option *ngFor="let item of dataSchema" value={{item.SCHEMA_NAME}}>{{item.SCHEMA_NAME}}</option>
-  </select>
-  <br>
+    <label>Schema: </label>
+    <select *ngIf="tipoMotor === 'MSSQL' && connectedMSSQL" id="schema" name="schema" [(ngModel)]="dataGenerateSP.schema" (click)="getTablesSchema()" required>
+      <option *ngFor="let item of dataSchema" value={{item.SCHEMA_NAME}}>{{item.SCHEMA_NAME}}</option>
+    </select>
+    <br>
 
-  <label style="margin-left: 10px;">Elija el CRUD a realizar: </label>
-  <select *ngIf="tipoMotor === 'MSSQL' && connectedMSSQL" name="motor" [(ngModel)]="tipoCRUD" required>
-    <option value="INSERT">INSERT</option>
-    <option value="SELECT">SELECT</option>
-    <option value="UPDATE">UPDATE</option>
-    <option value="DELETE">DELETE</option>
-  </select>
+    <label>Elija el CRUD a realizar: </label>
+    <select *ngIf="tipoMotor === 'MSSQL' && connectedMSSQL" name="motor" [(ngModel)]="tipoCRUD" required>
+      <option value="INSERT">INSERT</option>
+      <option value="SELECT">SELECT</option>
+      <option value="UPDATE">UPDATE</option>
+      <option value="DELETE">DELETE</option>
+    </select>
 
-  <br>
-  <br>
+    <br>
+    <br>
 
-  <label style="margin-left: 10px;">Table: </label>
-  <select *ngIf="tipoMotor === 'MSSQL' && connectedMSSQL" name="table" [(ngModel)]="dataGenerateSP.table" required>
-    <option *ngFor="let item of getDataTablesSchema" value={{item.TABLE_NAME}}>{{item.TABLE_NAME}}</option>
-  </select>
-  <br>
-
-
-  <label>Estado:</label>
-  <select *ngIf="tipoMotor === 'MSSQL' && connectedMSSQL" name="state" [(ngModel)]="dataGenerateSP.state" required>
-    <option value=2>Generar código</option>
-    <option value=1>Generar y ejecutar código</option>
-  </select>
-
-  <br>
+    <label>Table: </label>
+    <select *ngIf="tipoMotor === 'MSSQL' && connectedMSSQL" name="table" [(ngModel)]="dataGenerateSP.table" required>
+      <option *ngFor="let item of getDataTablesSchema" value={{item.TABLE_NAME}}>{{item.TABLE_NAME}}</option>
+    </select>
+    <br>
 
 
-  <label>Codigo Generado:</label>
-  <br>
-  <br>
-  <div>
-    <button type="submit">Aceptar</button>
-  </div>
-  <br>
-  <br>
-  <textarea name="codigo" maxlength="300" rows="7" [(ngModel)]="dataResult"></textarea>
+    <label>Estado:</label>
+    <select *ngIf="tipoMotor === 'MSSQL' && connectedMSSQL" name="state" [(ngModel)]="dataGenerateSP.state" required>
+      <option value=2>Generar código</option>
+      <option value=1>Generar y ejecutar código</option>
+    </select>
 
-  <br>
-  <br>
-  <br>
-  <label>Test PGSQL:</label>
-
-  <br>
-
-  <label>Host:</label>
-  <input *ngIf="tipoMotor === 'PGSQL' " name="host" type="text" [(ngModel)]="dataConnectPGSQL.host" required>
-
-  <br>
-  <label>User:</label>
-  <input *ngIf="tipoMotor === 'PGSQL' " name="user" type="text" [(ngModel)]="dataConnectPGSQL.user" required>
-  <br>
-
-  <label>Password:</label>
-  <input *ngIf="tipoMotor === 'PGSQL' " name="password" type="text" [(ngModel)]="dataConnectPGSQL.password" required>
-
-  <br>
-  <label>Database:</label>
-  <input *ngIf="tipoMotor === 'PGSQL' " name="database" type="text" [(ngModel)]="dataConnectPGSQL.database" required>
-  <br>
-
-  <label>Port:</label>
-  <input *ngIf="tipoMotor === 'PGSQL' " name="port" type="text" [(ngModel)]="dataConnectPGSQL.port" required>
-
-  <br>
-  <br>
-  <div>
-    <button type="submit">Conectar</button>
-  </div>
-  <br>
-  <br>
+    <br>
 
 
+    <label>Codigo Generado:</label>
+    <br>
+    <br>
+    <br>
+    <br>
+    <textarea name="codigo" maxlength="300" rows="7" [(ngModel)]="dataResult"></textarea>
+
+    <br>
+    <br>
+    <div>
+      <button type="submit">Aceptar</button>
+    </div>
+    <br>
+    <br>
+    <label>Test PGSQL:</label>
+
+    <br>
+
+    <label>Host:</label>
+    <input *ngIf="tipoMotor === 'PGSQL' " name="host" type="text" [(ngModel)]="dataConnectPGSQL.host" required>
+
+    <br>
+    <label>User:</label>
+    <input *ngIf="tipoMotor === 'PGSQL' " name="user" type="text" [(ngModel)]="dataConnectPGSQL.user" required>
+    <br>
+
+    <label>Password:</label>
+    <input *ngIf="tipoMotor === 'PGSQL' " name="password" type="text" [(ngModel)]="dataConnectPGSQL.password" required>
+
+    <br>
+    <label>Database:</label>
+    <input *ngIf="tipoMotor === 'PGSQL' " name="database" type="text" [(ngModel)]="dataConnectPGSQL.database" required>
+    <br>
+
+    <label>Port:</label>
+    <input *ngIf="tipoMotor === 'PGSQL' " name="port" type="text" [(ngModel)]="dataConnectPGSQL.port" required>
+
+    <br>
+    <br>
+    <div>
+      <button type="submit">Conectar</button>
+    </div>
+    <br>
+    <br>
 
 
-  <label>Crear Schema:</label>
-  <input *ngIf="tipoMotor === 'PGSQL'  && connectedPGSQL " name="crearSchema2" type="text" [(ngModel)]="dataCrearSchemaPG.schema">
-  <br>
-  <br>
-  <button type="button" name="crearSchema2" (click)="crearSchema2()">Crear Schema</button>
-  <br>
-  <br>
-
-  <label style="margin-left: 10px;">Schema: </label>
-  <select *ngIf="tipoMotor === 'PGSQL' && connectedPGSQL" id="schema2" name="schema2" [(ngModel)]="dataGenerateSPPG.schema" (click)="getTablesSchema2()" required>
-    <option *ngFor="let item of dataSchemaPG" value={{item.get_schemas}}>{{item.get_schemas}}</option>
-  </select>
-  <br>
-
-  <label style="margin-left: 10px;">Elija el CRUD a realizar: </label>
-  <select *ngIf="tipoMotor === 'PGSQL' && connectedPGSQL" name="motor" [(ngModel)]="tipoCRUD2" required>
-    <option value="INSERT">INSERT</option>
-    <option value="SELECT">SELECT</option>
-    <option value="UPDATE">UPDATE</option>
-    <option value="DELETE">DELETE</option>
-  </select>
-
-  <br>
-  <br>
-
-  <label style="margin-left: 10px;">Table: </label>
-  <select *ngIf="tipoMotor === 'PGSQL' && connectedPGSQL" name="table" [(ngModel)]="dataGenerateSPPG.table" required>
-    <option *ngFor="let item of getDataTablesSchemaPG" value={{item.get_tables}}>{{item.get_tables}}</option>
-  </select>
-  <br>
 
 
-  <label>Estado:</label>
-  <select *ngIf="tipoMotor === 'PGSQL' && connectedPGSQL" name="state" [(ngModel)]="dataGenerateSPPG.state" required>
-    <option value=1>Generar código</option>
-    <option value=2>Generar y ejecutar código</option>
-  </select>
+    <label>Crear Schema:</label>
+    <input *ngIf="tipoMotor === 'PGSQL'  && connectedPGSQL " name="crearSchema2" type="text" [(ngModel)]="dataCrearSchemaPG.schema">
+    <br>
+    <br>
+    <button type="button" name="crearSchema2" (click)="crearSchema2()">Crear Schema</button>
+    <br>
+    <br>
 
-  <br>
-  <br>
-  <label>Codigo Generado:</label>
-  <br>
-  <br>
-  <br>
-  <br>
-  <textarea name="codigo2" maxlength="300" rows="7" [(ngModel)]="dataResult2"></textarea>
+    <label>Schema: </label>
+    <select *ngIf="tipoMotor === 'PGSQL' && connectedPGSQL" id="schema2" name="schema2" [(ngModel)]="dataGenerateSPPG.schema" (click)="getTablesSchema2()" required>
+      <option *ngFor="let item of dataSchemaPG" value={{item.get_schemas}}>{{item.get_schemas}}</option>
+    </select>
+    <br>
 
-  <div>
-    <button type="submit">Aceptar</button>
-  </div>
+    <label>Elija el CRUD a realizar: </label>
+    <select *ngIf="tipoMotor === 'PGSQL' && connectedPGSQL" name="motor" [(ngModel)]="tipoCRUD2" required>
+      <option value="INSERT">INSERT</option>
+      <option value="SELECT">SELECT</option>
+      <option value="UPDATE">UPDATE</option>
+      <option value="DELETE">DELETE</option>
+    </select>
 
-  <br>
-  <br>
+    <br>
+    <br>
 
-</form>
+    <label>Table: </label>
+    <select *ngIf="tipoMotor === 'PGSQL' && connectedPGSQL" name="table" [(ngModel)]="dataGenerateSPPG.table" required>
+      <option *ngFor="let item of getDataTablesSchemaPG" value={{item.get_tables}}>{{item.get_tables}}</option>
+    </select>
+    <br>
+
+
+    <label>Estado:</label>
+    <select *ngIf="tipoMotor === 'PGSQL' && connectedPGSQL" name="state" [(ngModel)]="dataGenerateSPPG.state" required>
+      <option value=1>Generar código</option>
+      <option value=2>Generar y ejecutar código</option>
+    </select>
+
+    <br>
+    <br>
+    <label>Codigo Generado:</label>
+    <br>
+    <br>
+    <br>
+    <br>
+    <textarea name="codigo2" maxlength="300" rows="7" [(ngModel)]="dataResult2"></textarea>
+
+    <div>
+      <button type="submit">Aceptar</button>
+    </div>
+
+    <br>
+    <br>
+
+  </form>

@@ -1,7 +1,8 @@
+//Constantes librerias
 const { Pool } = require('pg');
 const express = require('express');
 const router = express.Router();
-
+//Constante conexion
 const pool = new Pool({
   host: String,
   user: String,
@@ -10,7 +11,7 @@ const pool = new Pool({
   port: String
 });
 
-
+//Endpoint que realiza la conexión
 router.post('/connect', (req,res) =>{
   const host = req.body.host;
   const user = req.body.user;

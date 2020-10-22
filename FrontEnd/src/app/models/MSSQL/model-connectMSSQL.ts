@@ -1,3 +1,4 @@
+//Modelo connect
 export class DataConnectMSSQL {
     user: string;
     password: string;

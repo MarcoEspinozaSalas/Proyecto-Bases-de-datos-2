@@ -6,8 +6,8 @@ const sql = require('mssql');
 //Usar las rutas
 router.use(bodyParser.urlencoded({extended: false}));
 router.use(bodyParser.json());
-
-//Test generateInsert
+//Endpoints
+//Ruta generateInsert
 router.post('/insert', (req, res) => {
   const conn = require('./dbconnMSSQL').config;
   const routePool = new sql.ConnectionPool(conn);
@@ -38,7 +38,7 @@ router.post('/insert', (req, res) => {
   });
 });
 
-//Test generateSelect
+//Ruta generateSelect
 router.post('/select', (req, res) => {
   const conn = require('./dbconnMSSQL').config;
   const routePool = new sql.ConnectionPool(conn);
@@ -69,7 +69,7 @@ router.post('/select', (req, res) => {
   });
 });
 
-//Test generateUpdate
+//Ruta generateUpdate
 router.post('/update', (req, res) => {
   const conn = require('./dbconnMSSQL').config;
   const routePool = new sql.ConnectionPool(conn);
@@ -101,7 +101,7 @@ router.post('/update', (req, res) => {
 });
 
 
-//Test generateDelete
+//Ruta generateDelete
 router.post('/delete', (req, res) => {
   const conn = require('./dbconnMSSQL').config;
   const routePool = new sql.ConnectionPool(conn);
@@ -133,7 +133,7 @@ router.post('/delete', (req, res) => {
 });
 
 
-//Test get_tables_schema
+//Ruta get_tables_schema
 router.post('/tablesSchema', (req, res) => {
   const conn = require('./dbconnMSSQL').config;
   const routePool = new sql.ConnectionPool(conn);
@@ -180,7 +180,7 @@ router.get('/Schemas', (req, res) => {
 });
 
 
-//Test get_table_columns
+//Ruta get_table_columns
 router.post('/tablesColums', (req, res) => {
   const conn = require('./dbconnMSSQL').config;
   const routePool = new sql.ConnectionPool(conn);
@@ -207,7 +207,7 @@ router.post('/tablesColums', (req, res) => {
 });
 
 
-//Test obtenerPK
+//Ruta obtenerPK
 router.post('/obtenerPK', (req, res) => {
   const conn = require('./dbconnMSSQL').config;
   const routePool = new sql.ConnectionPool(conn);
@@ -233,7 +233,7 @@ router.post('/obtenerPK', (req, res) => {
   });
 });
 
-//Test crearSchema
+//Ruta crearSchema
 router.post('/crearSchema', (req, res) => {
   const conn = require('./dbconnMSSQL').config;
   const routePool = new sql.ConnectionPool(conn);

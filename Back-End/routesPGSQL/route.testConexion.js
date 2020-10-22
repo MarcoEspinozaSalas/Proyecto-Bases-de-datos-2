@@ -97,7 +97,7 @@ router.post('/delete', (req, res) => {
     return next(err);
   });
 });
-
+//Obtener schemas
 router.get('/schemas', (req, res) => {
   conn.query('select get_schemas();').then(response => {
     return response;
@@ -114,7 +114,7 @@ router.get('/schemas', (req, res) => {
   });
 });
 
-
+//Obtener tablas por el schema
 router.post('/tablesSchema', (req, res) => {
   const schema = req.body.schema;
   if (!schema){
@@ -134,7 +134,7 @@ router.post('/tablesSchema', (req, res) => {
     return next(err);
   });
 });
-
+//Crear schema
 router.post('/crearSchema', (req, res) => {
   const schema = req.body.schema;
   if (!schema){

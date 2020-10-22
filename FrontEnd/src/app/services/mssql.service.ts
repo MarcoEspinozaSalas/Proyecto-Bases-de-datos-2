@@ -1,3 +1,4 @@
+//Imports
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DataConnectMSSQL} from '../models/MSSQL/model-connectMSSQL';
@@ -8,7 +9,7 @@ import { DataCrearSchemas} from '../models/MSSQL/model-crearSchema';
   providedIn: 'root'
 })
 export class MSSQLService {
-
+//Globals
   ip: string = 'localhost';
   port: string = '3000';
   urlRoot: string = `http://${this.ip}:${this.port}/testConexionMSSQL`;
@@ -16,7 +17,7 @@ export class MSSQLService {
 
 
   constructor(public http: HttpClient) { }
-
+  //Micro servicios para usar los endpoints
   postConnect(
     data: DataConnectMSSQL
   ) {

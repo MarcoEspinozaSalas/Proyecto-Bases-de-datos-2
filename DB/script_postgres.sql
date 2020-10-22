@@ -34,6 +34,7 @@ CREATE OR REPLACE FUNCTION get_columns(schema VARCHAR, p_tableName VARCHAR)
     $$
     LANGUAGE PLPGSQL ;
 ---------------------------------------------------------------------------------------------------------------------------
+--Generate insert
 CREATE OR REPLACE FUNCTION generate_insert(p_schema VARCHAR,ptable_name VARCHAR, state INT)
     RETURNS varchar
    	LANGUAGE PLPGSQL
@@ -96,6 +97,7 @@ CREATE OR REPLACE FUNCTION generate_insert(p_schema VARCHAR,ptable_name VARCHAR,
 
     select generate_insert('public','personas',0)
   ---------------------------------------------------------------------------------------------------------------------------
+--Generate select
    CREATE OR REPLACE FUNCTION generate_select(p_schema VARCHAR,ptable_name VARCHAR,state INT)
     RETURNS varchar
    	LANGUAGE PLPGSQL
@@ -166,7 +168,7 @@ CREATE OR REPLACE FUNCTION generate_insert(p_schema VARCHAR,ptable_name VARCHAR,
 	select generate_select('public','personas',0)
 
  ---------------------------------------------------------------------------------------------------------------------------
-
+--Generate update
 CREATE OR REPLACE FUNCTION generate_update(p_schema VARCHAR,ptable_name VARCHAR, state INT)
     RETURNS varchar
    	LANGUAGE PLPGSQL
@@ -237,7 +239,7 @@ CREATE OR REPLACE FUNCTION generate_update(p_schema VARCHAR,ptable_name VARCHAR,
 
 
  ---------------------------------------------------------------------------------------------------------------------------
-
+--Generate delete
 CREATE OR REPLACE FUNCTION generate_delete(p_schema VARCHAR,ptable_name VARCHAR,state INT)
     RETURNS varchar
    	LANGUAGE PLPGSQL
@@ -307,6 +309,7 @@ CREATE OR REPLACE FUNCTION generate_delete(p_schema VARCHAR,ptable_name VARCHAR,
 
    select generate_delete('public','personas',0);
  ---------------------------------------------------------------------------------------------------------------------------
+--Procedure retorna los schemas
   CREATE OR REPLACE FUNCTION get_schemas()
     RETURNS TABLE(name information_schema.schemata.schema_name%TYPE)
     AS
@@ -319,6 +322,7 @@ CREATE OR REPLACE FUNCTION generate_delete(p_schema VARCHAR,ptable_name VARCHAR,
 
  select get_schemas();
  --------------------------------------------------------------------------------------------------------------------------
+--Procedure retorna los tablas por schemas
   CREATE OR REPLACE FUNCTION get_tables(p_schema varchar)
     RETURNS TABLE(name information_schema.tables.table_name%TYPE)
     AS
@@ -330,6 +334,7 @@ CREATE OR REPLACE FUNCTION generate_delete(p_schema VARCHAR,ptable_name VARCHAR,
 
  select get_tables('public');
   --------------------------------------------------------------------------------------------------------------------------
+--Procedure crea schema
   CREATE OR REPLACE FUNCTION create_schema(p_schema varchar)
     RETURNS VOID
     AS

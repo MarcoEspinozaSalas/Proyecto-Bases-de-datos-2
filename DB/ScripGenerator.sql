@@ -9,6 +9,7 @@ GO
 
 --CREATE TABLE personas (id INT PRIMARY KEY, name VARCHAR(30));
 GO
+--Generate insert
 CREATE OR ALTER PROCEDURE generate_insert
 	@schema VARCHAR(50),
 	@table VARCHAR (50),
@@ -80,7 +81,7 @@ GO
 --EXEC generate_insert 'DBO','personas',1;
 
 GO
-
+--Generate select
 CREATE OR ALTER PROCEDURE generate_select
 	@schema VARCHAR(50),
 	@table VARCHAR (50),
@@ -185,10 +186,11 @@ CREATE OR ALTER PROCEDURE generate_select
 			END
 	END
 GO
---EXEC generate_select 'DBO','personas',1;	
+--EXEC generate_select 'DBO','personas',1;
 GO
 
 GO
+--Generate update
 CREATE OR ALTER PROCEDURE generate_update
 	@schema VARCHAR(50),
 	@table VARCHAR (50),
@@ -321,7 +323,7 @@ GO
 --EXEC generate_update  'test15','personas2',1;
 
 GO
-
+--Generate delete
 CREATE OR ALTER PROCEDURE generate_delete
 	@schema VARCHAR(50),
 	@table VARCHAR (50),
@@ -413,6 +415,7 @@ CREATE OR ALTER PROCEDURE generate_delete
 GO
 --EXEC generate_delete  'DBO','personas',1;
 GO
+--Procedure retorna tablas por schema
 CREATE OR ALTER PROCEDURE get_tables_schema
 	@schema VARCHAR (50)
 	AS
@@ -434,7 +437,7 @@ CREATE OR ALTER PROCEDURE get_table_columns
 	END
 GO
 
-
+--Procedure retorna pk de una tabla
 CREATE OR ALTER PROCEDURE get_primary_key
 @table_name NVARCHAR(150)
 AS
@@ -451,6 +454,7 @@ AS
 	END
 GO
 --EXEC get_primary_key personas;
+--Procedure crear schema
 CREATE OR ALTER PROCEDURE create_schema
 	@schema varchar( 50 )
 AS
@@ -474,4 +478,3 @@ AS
 --EXEC ObtenerLlave 'personas';
 --EXEC create_schema 'test';
 --CREATE TABLE test15.personas5 (id INT PRIMARY KEY, name VARCHAR(30));
-
