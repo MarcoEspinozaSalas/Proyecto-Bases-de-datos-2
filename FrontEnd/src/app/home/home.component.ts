@@ -138,6 +138,7 @@ export class HomeComponent implements OnInit {
           (data: any) =>{
             if(data.estado === 1){
               alert("Schema Creado");
+              this.getSchemaAfterConnect();
             }
             else{
                alert("No se conectó");
