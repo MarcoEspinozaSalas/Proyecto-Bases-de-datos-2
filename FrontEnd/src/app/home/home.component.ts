@@ -9,6 +9,7 @@ import { DataSchemas} from '../models/MSSQL/model-dataSchemas';
 import { DataTablesSchema} from '../models/MSSQL/model-tablesSchema';
 import { GetDataTablesSchema} from '../models/MSSQL/model-getDataTablesSchema';
 import { DataCrearSchemas} from '../models/MSSQL/model-crearSchema';
+import { DataGenerateSPPG} from '../models/PGSQL/model-generateSP';
 
 
 import { DataConnectPGSQL} from '../models/PGSQL/model-connectPGSQL';
@@ -24,6 +25,7 @@ export class HomeComponent implements OnInit {
   dataConnectMSSQL= new DataConnectMSSQL();
   dataConnectPGSQL= new DataConnectPGSQL();
   dataGenerateSP= new DataGenerateSP();
+  dataGenerateSPPG= new DataGenerateSPPG();
   dataTablesSchema= new DataTablesSchema();
   dataCrearSchema= new DataCrearSchemas();
   tipoMotor : any;
