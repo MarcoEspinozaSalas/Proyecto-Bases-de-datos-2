@@ -306,3 +306,37 @@ CREATE OR REPLACE FUNCTION generate_delete(p_schema VARCHAR,ptable_name VARCHAR,
     $$;
    
    select generate_delete('public','personas',0);
+ ---------------------------------------------------------------------------------------------------------------------------
+  CREATE OR REPLACE FUNCTION get_schemas()
+    RETURNS TABLE(name information_schema.schemata.schema_name%TYPE)
+    AS 
+    $$
+   	begin
+		 RETURN QUERY SELECT schema_name FROM information_schema.schemata ;
+
+    end;
+    $$ LANGUAGE plpgsql;
+   
+ select get_schemas();
+ --------------------------------------------------------------------------------------------------------------------------
+  CREATE OR REPLACE FUNCTION get_tables(p_schema varchar)
+    RETURNS TABLE(name information_schema.tables.table_name%TYPE)
+    AS 
+    $$
+   	begin
+		 RETURN QUERY SELECT table_name FROM information_schema."tables" where table_schema  = p_schema;
+    end;
+    $$ LANGUAGE plpgsql;
+   
+ select get_tables('public');
+  --------------------------------------------------------------------------------------------------------------------------
+  CREATE OR REPLACE FUNCTION create_schema(p_schema varchar)
+    RETURNS VOID
+    AS 
+    $$
+   	begin
+		  EXECUTE FORMAT('CREATE SCHEMA %I;', p_schema);
+    end;
+    $$ LANGUAGE plpgsql;
+   
+ select create_schema('private');
