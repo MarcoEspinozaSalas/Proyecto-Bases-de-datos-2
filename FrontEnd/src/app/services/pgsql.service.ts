@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { DataConnectPGSQL} from '../models/PGSQL/model-connectPGSQL';
-import { DataGenerateSPPG} from '../models/PGSQL/model-generateSP';
+import { DataConnectPGSQL } from '../models/PGSQL/model-connectPGSQL';
+import { DataGenerateSPPG } from '../models/PGSQL/model-generateSP';
+import { DataTablesSchemaPG } from '../models/PGSQL/model-tablesSchemaPG';
+import { DataCrearSchemasPG } from '../models/PGSQL/model-crearSchemaPG';
+
 
 @Injectable({
   providedIn: 'root'
@@ -50,24 +53,21 @@ export class PGSQLService {
     return this.http.post(`${this.urlRoot}/delete`, data);
   }
 
-  
-
- /*
   postTablesSchema(
-    data: DataTablesSchema
+    data: DataTablesSchemaPG
   ) {
     return this.http.post(`${this.urlRoot}/tablesSchema`, data);
   }
 
   getSchemas(
   ) {
-    return this.http.get(`${this.urlRoot}/Schemas`);
+    return this.http.get(`${this.urlRoot}/schemas`);
   }
 
   postCrearSchema(
-    data: DataCrearSchemas
+    data: DataCrearSchemasPG
   ) {
     return this.http.post(`${this.urlRoot}/crearSchema`, data);
   }
-  */
+
 }

@@ -38,7 +38,7 @@ router.post('/select', (req, res) => {
   if (!schema || !table || !state){
       return res.status(400).json({mensaje:'Falta datos'});
   }
-  conn.query('select generate_insert(' + '\'' + schema + '\'' + ',' + '\'' + table + '\'' + ',' + state+ ')').then(response => {
+  conn.query('select generate_select(' + '\'' + schema + '\'' + ',' + '\'' + table + '\'' + ',' + state+ ')').then(response => {
     return response;
   }).then(val => {
     //conn.end();
@@ -53,7 +53,7 @@ router.post('/select', (req, res) => {
   });
 });
 
-//Generate select
+//Generate update
 router.post('/update', (req, res) => {
   const schema = req.body.schema;
   const table = req.body.table;
@@ -75,7 +75,7 @@ router.post('/update', (req, res) => {
     return next(err);
   });
 });
-
+//Generate delete
 router.post('/delete', (req, res) => {
   const schema = req.body.schema;
   const table = req.body.table;
@@ -84,6 +84,63 @@ router.post('/delete', (req, res) => {
       return res.status(400).json({mensaje:'Falta datos'});
   }
   conn.query('select generate_delete(' + '\'' + schema + '\'' + ',' + '\'' + table + '\'' + ',' + state+ ')').then(response => {
+    return response;
+  }).then(val => {
+    //conn.end();
+    if (val.rowCount < 1) return res.status(200).json({mensaje:"No hay datos"});
+    else if (val.rowCount >= 1) return res.status(200).json(val.rows);
+    else return res.status(400).json({mensaje:"Indefinido"});
+  }).catch(err => {
+    //conn.end();
+    console.error(err);
+    err.status = 500;
+    return next(err);
+  });
+});
+
+router.get('/schemas', (req, res) => {
+  conn.query('select get_schemas();').then(response => {
+    return response;
+  }).then(val => {
+    //conn.end();
+    if (val.rowCount < 1) return res.status(200).json({mensaje:"No hay datos"});
+    else if (val.rowCount >= 1) return res.status(200).json(val.rows);
+    else return res.status(400).json({mensaje:"Indefinido"});
+  }).catch(err => {
+    //conn.end();
+    console.error(err);
+    err.status = 500;
+    return next(err);
+  });
+});
+
+
+router.post('/tablesSchema', (req, res) => {
+  const schema = req.body.schema;
+  if (!schema){
+      return res.status(400).json({mensaje:'Falta datos'});
+  }
+  conn.query('select get_tables(' + '\'' + schema + '\'' + ')').then(response => {
+    return response;
+  }).then(val => {
+    //conn.end();
+    if (val.rowCount < 1) return res.status(200).json({mensaje:"No hay datos"});
+    else if (val.rowCount >= 1) return res.status(200).json(val.rows);
+    else return res.status(400).json({mensaje:"Indefinido"});
+  }).catch(err => {
+    //conn.end();
+    console.error(err);
+    err.status = 500;
+    return next(err);
+  });
+});
+
+router.post('/crearSchema', (req, res) => {
+  const schema = req.body.schema;
+  if (!schema){
+      return res.status(400).json({mensaje:'Falta datos'});
+  }
+  conn.query('select create_schema(' + '\'' + schema + '\'' + ')').then(response => {
     return response;
   }).then(val => {
     //conn.end();
