@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DataConnectPGSQL} from '../models/PGSQL/model-connectPGSQL';
+import { DataGenerateSP} from '../models/PGSQL/model-generateSP';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,12 @@ export class PGSQLService {
   getTest(
   ) {
     return this.http.get(`${this.urlRoot}/`);
+  }
+
+  postSelect(
+    data: DataGenerateSP
+  ){
+    return this.http.post(`${this.urlRootConnect}/connect`, data);
   }
 
 }
